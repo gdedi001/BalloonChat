@@ -1,5 +1,5 @@
 {
-  "name": "practicechat",
+  "name": "MercuriusChat",
   "version": "1.0.0",
   "description": "a practice environment for node/express/socket.io",
   "main": "index.js",
