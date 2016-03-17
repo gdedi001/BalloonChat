@@ -1,0 +1,15 @@
+{
+  "name": "practicechat",
+  "version": "1.0.0",
+  "description": "a practice environment for node/express/socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabriel de Diego",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^1.4.5"
+  }
+}
