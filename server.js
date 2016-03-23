@@ -1,12 +1,12 @@
 "use strict";
-let	express = require('express');
-let app = express();
-let server = require('http').Server(app);
-let io = require('socket.io')(server);
+var	express = require('express');
+var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
 
 // Routing refers to determining how an application responds to a client request to a particular endpoint
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/index.html');
+	res.sendFile(__dirname + '/public/index.html');
 });
 
 // Once a browser connects to localhost:8080, the 'connection' event will fire

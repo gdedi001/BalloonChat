@@ -18,15 +18,12 @@
     <form id="chat_form" action="">
       <input id="chat_input" autocomplete="off" /><button>Send</button>
     </form>
-	  
-	  
-  <!-- jQuery -->
+	<!-- jQuery -->
 	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <!-- socket.io -->
+  	<!-- socket.io -->
 	<script src="/socket.io/socket.io.js"></script>
-  <script src="insertMessage.js"></script>
 	<script>
-		var server = io.connect('http://localhost:8080');
+		var server = io.connect("http://localhost:8080");
 
 		$('#chat_form').submit(function(e){
 			var message = $("#chat_input").val();
