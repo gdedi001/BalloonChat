@@ -4,3 +4,7 @@ He is the patron god of financial gain, commerce, eloquence (and thus poetry), <
 
 This application focuses on Mercurius' power for messages & communications.
 
+How to start **Redis** *(used for persistent data)*
+Before we start our server please execute the following command from your terminal 
+`redis-server`
+
