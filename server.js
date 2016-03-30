@@ -1,7 +1,4 @@
 "use strict";
-/* Redis DB
-var redis = require('redis');
-var redisClient = redis.createClient(); */
 var chat_session = require('./chat-session');
 // Express with server functionality
 var	express = require('express');
