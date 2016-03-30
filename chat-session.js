@@ -1,19 +1,20 @@
 "use strict";
 var store = {
-    users: new Array(),
+    users: [],
+	messages: [],
     count: 0,
     channels: {
-        '#anouncements': {
+        '#general': {
             type: 'user',
-            messages: new Array()
+            messages: []
         },
-        '#soccer': {
+        '#videogames': {
             type: 'user',
-            messages: new Array()
+            messages: []
         },
-        '#jazz': {
+        '#programming': {
             type: 'user',
-            messages: new Array()
+            messages: []
         },
     }
 };
