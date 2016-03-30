@@ -25,7 +25,7 @@
 		  border: 0; 
 		  padding: 10px; 
 		  font-size: 20px;
-		  width: 83%; 
+		  width: 80%; 
 		  margin-right: .5%; 
 		}
 		
@@ -49,10 +49,12 @@
 		  padding: 5px 10px; 
 		}
 		
+/*
 	  #messages li:nth-child(odd) { 
 		  background: #0066ff;
 		  color: white;
 		}
+*/
 		
 	  #channel-sec { 
 		  background: purple;
@@ -73,17 +75,16 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3" id="channel-sec">
-				<h4>Connected Chatters</h4>
+				<h4 style="color:white; text-align:center">Connected Chatters</h4>
 				<ul id="users">
 				<!-- add users here -->
 				</ul>
 			</div>
 			<div class="col-md-9" id="main">
 				<ul class="nav nav-tabs">
-				  <li class="active"><a href="#">Home</a></li>
-				  <li><a href="#">Room 2</a></li>
-				  <li><a href="#">Room 3</a></li>
-				  <li><a href="#">Room 4</a></li>
+				  <li class="active"><a href="#">General</a></li>
+				  <li><a href="#">Video Games</a></li>
+				  <li><a href="#">Programming</a></li>
 				</ul>
 				<ul id="messages"></ul>
 				<form id="chat_form" action="">
@@ -102,14 +103,21 @@
 			
 			server.on('connect', function(data){
 				$('#status').html('Divinity acknowledged, welcome...');
-				nickname = prompt("By the gods, what is your nickname?");
+				nickname = prompt("What is your nickname?");
 				// notify the server of the users nickname
 				server.emit('join', nickname);
 			});
+			
+			server.on('enter', function(data){
+				$('#messages').append($('<li style="background:#ff9900">').text(data));
+			});
 
-			// SERVER -> CLIENT:MESSAGE event handler 
 			server.on('message', function(message){
-			  $('#messages').append($('<li>').text(message));
+				$('#messages').append($('<li>').text(message));
+			});
+			
+			server.on('me', function(message){
+				$('#messages').append($('<li style="background:#0066ff; color:white">').text(message));
 			});
 
 			$('#chat_form').submit(function(e){
@@ -118,7 +126,6 @@
 				$('#chat_input').val(''); // Make input box blank for new message
 				return false; // prevents refresh of page after submit
 			});
-
 		</script>
 	</div>
 </body>
