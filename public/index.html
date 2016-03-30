@@ -21,11 +21,43 @@
 		  width: 80%; 
 		}
 		
-	  form input { border: 0; padding: 10px; width: 83%; margin-right: .5%; }
-	  form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-	  #messages {list-style-type: none; margin: 0; padding: 0; }
-	  #messages li { padding: 5px 10px; }
-	  #messages li:nth-child(odd) { background: #eee; }
+	  form input { 
+		  border: 0; 
+		  padding: 10px; 
+		  font-size: 20px;
+		  width: 83%; 
+		  margin-right: .5%; 
+		}
+		
+	  form button { 
+		  width: 9%; 
+		  background: rgb(130, 224, 255); 
+		  border: none; 
+		  padding: 10px; 
+		}
+		
+	  #messages {
+		  list-style-type: none; 
+		  margin: 0; 
+		  padding: 0; 
+		}
+		
+	  #messages li { 
+		  border-radius: 25px;
+		  background: #eee;
+		  font-size: 20px;
+		  padding: 5px 10px; 
+		}
+		
+	  #messages li:nth-child(odd) { 
+		  background: #0066ff;
+		  color: white;
+		}
+		
+	  #channel-sec { 
+		  background: purple;
+		  height: 100vh;
+		}
 	</style>
 	  <!-- Bootstrap CDN -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
@@ -41,9 +73,18 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3" id="channel-sec">
-			
+				<h4>Connected Chatters</h4>
+				<ul id="users">
+				<!-- add users here -->
+				</ul>
 			</div>
 			<div class="col-md-9" id="main">
+				<ul class="nav nav-tabs">
+				  <li class="active"><a href="#">Home</a></li>
+				  <li><a href="#">Room 2</a></li>
+				  <li><a href="#">Room 3</a></li>
+				  <li><a href="#">Room 4</a></li>
+				</ul>
 				<ul id="messages"></ul>
 				<form id="chat_form" action="">
 					<input id="chat_input" autocomplete="off" /><button>Send</button>
@@ -58,9 +99,12 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var server = io.connect("http://localhost:8080");
-
+			
 			server.on('connect', function(data){
 				$('#status').html('Divinity acknowledged, welcome...');
+				nickname = prompt("By the gods, what is your nickname?");
+				// notify the server of the users nickname
+				server.emit('join', nickname);
 			});
 
 			// SERVER -> CLIENT:MESSAGE event handler 
@@ -71,7 +115,6 @@
 			$('#chat_form').submit(function(e){
 				var message = $("#chat_input").val();
 				server.emit('message', message);
-				$('#messages').append(`<li>${message}</li>`);
 				$('#chat_input').val(''); // Make input box blank for new message
 				return false; // prevents refresh of page after submit
 			});
