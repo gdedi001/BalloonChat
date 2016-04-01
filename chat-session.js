@@ -1,8 +1,6 @@
 "use strict";
 var store = {
     users: [],
-	messages: [],
-    count: 0,
     channels: {
         '#general': {
             type: 'user',
