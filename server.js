@@ -1,12 +1,15 @@
 "use strict";
 var chat_session = require('./chat-session');
+var serveStatic = require('serve-static');
 // Express with server functionality
 var	express = require('express');
 var app = express();
 var server = require('http').Server(app);
 // Sockets with real-time data
 var io = require('socket.io').listen(server);
-const PORT = 8080;
+
+app.use(express.static(__dirname + '/public')); // used for external files on client
+
 
 // Routing refers to determining how an application responds to a client request to a particular endpoint
 app.get('/', function(req, res){
@@ -15,41 +18,53 @@ app.get('/', function(req, res){
 
 // Once a browser connects to localhost:8080, the 'connection' event will fire
 io.on('connection', function(client){
+	 
+	var storage = chat_session.default.users.channels;
 	
-	// CLIENT -> SERVER:JOIN event handler
-	client.on('join', function(name){
-		chat_session.default.messages.forEach(function(message){
+	// Join the chatroom
+	client.on('join', (name) => {
+		// Alert when new client joins
+		client.nickname = name;
+		client.broadcast.emit("enter", "* " + client.nickname + " has entered the room *");
+		
+		// Update current chatters section for new client that joined
+		chat_session.default.users.forEach((user) => {
+			client.emit('add chatter', user);
+		});
+		// Update current chatters section for other clients
+		client.broadcast.emit('add chatter', client.nickname);
+		
+		// Update NEW client with most recent messages in the room
+		chat_session.default.channels.general.messages.forEach((message) => {
 			client.emit("message", message.name + ": " + message.data);
 		});
 		
-		client.nickname = name;
-		client.broadcast.emit("enter", "CHAT ALERT: " + name + " has entered the room");
 		// add new chatters to array in chat-session module
 		chat_session.default.users.push(client.nickname);
-		chat_session.default.count++; // update amount of chatters in the room
 		
-		console.log(client.nickname + " has joined!!");
+		//console.log(client.nickname + " has joined!!");
 	});
 	
-	client.on('message', function(message){
+	client.on('message', (message) => {
 		var nickname = client.nickname;
+		var room = 'general';
+		console.log('Current room ' + room);
 		client.broadcast.emit("message", nickname + ": " + message); // send the message to all the other clients except the newly created connection
-		client.emit("me", nickname + ": " + message); // send message to self
-		storeMessage(nickname, message); // store the message in chat-session
+		client.emit("me", message); // send message to self
+		storeMessage(room, nickname, message); // store the message in chat-session
+		//notification();
 		console.log(nickname + ' said: ' + message); // used for terminal debugging
 	});
 	
-	//TODO: figure out usage of this function
-//	client.on('answers', function(message, answer){
-//		client.broadcast.emit('answer', message, answer);
-//	});
+	// client.on('tabChange', ())
 });
 
-function storeMessage(name, data){
-	chat_session.default.messages.push({name: name, data: data}); // add message to end of array
-	if (chat_session.default.messages.length > 10) {
-		chat_session.default.messages.shift(); // if more than 10 messages long, remove the first one
+function storeMessage(room, name, data){
+	chat_session.default.channels[room].messages.push({name: name, data: data}); // add message to end of array
+	if (chat_session.default.channels[room].messages.length > 10) {
+		chat_session.default.channels[room].messages.shift(); // if more than 10 messages long, remove the first one
 	}
 }
-		
+
+const PORT = 8080;
 server.listen(PORT);
