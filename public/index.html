@@ -2,96 +2,25 @@
 <html>
 <head>
 	<title>Mercurius - Communication Powered by the gods</title>
-	<style>
-		* { 
-		  margin: 0; 
-		  padding: 0; 
-		  box-sizing: border-box; 
-		}
-
-		body { 
-		  font: 13px Helvetica, Arial; 
-		}
-
-		form { 
-		  background: #000; 
-		  padding: 3px; 
-		  position: fixed; 
-		  bottom: 0; 
-		  width: 80%; 
-		}
-
-		form input { 
-		  border: 0; 
-		  padding: 10px; 
-		  font-size: 20px;
-		  width: 80%; 
-		  margin-right: .5%; 
-		}
-
-		form button { 
-			width: 9%; 
-			background: rgb(130, 224, 255); 
-			border: none; 
-			padding: 10px; 
-		}
-
-		#messages {
-		  list-style-type: none; 
-		  margin: 0; 
-		  padding: 0; 
-		}
-
-		#messages li { 
-			border-radius: 25px;
-			background: #eee;
-			font-size: 20px;
-			margin-bottom: .5%;
-			padding: 5px 10px;
-			text-align: center;
-		}
-
-		#channel-sec { 
-		  background: #660033;
-		  height: 100vh;
-		}
-		
-		#channel-sec h4 { 
-			color: white;
-			text-align: center;
-			font-family: inherit;
-			font-size: 22px;
-
-		}
-		#users { 
-		  list-style: none;
-		}
-
-		#users li:before { 
-		  content: "•"; /* Insert content that looks like bullets */
-		  padding-right: 8px;
-		  color: green; /* Or a color you prefer */
-		}	
-	</style>
-	  <!-- Bootstrap CDN -->
+	<!-- Bootstrap CDN -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Local CSS -->
-	<link type="text/css" href="./style.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3" id="channel-sec">
-				<h4 style="color:white; text-align:center">Connected Chatters</h4>
+			<div class="col-md-2" id="channel-sec">
+				<h3 style="color:white; text-align:center; text-decoration:underline; font-family:fantasy">Chatters</h3>
 				<ul id="users">
 				<!-- add users here -->
 				</ul>
 			</div>
-			<div class="col-md-9" id="main">
+			<div class="col-md-10" id="main">
 				<ul class="nav nav-tabs">
-				  <li class="active"><a href="#">General</a></li>
-				  <li><a href="#">Video Games</a></li>
-				  <li><a href="#">Programming</a></li>
+				  <li id="general" class="active"><a href="#">General</a></li>
+				  <li id="videogames" ><a href="#">Video Games</a></li>
+				  <li id="programming"><a href="#">Programming</a></li>
 				</ul>
 				<ul id="messages"></ul>
 				<form id="chat_form" action="">
@@ -100,46 +29,13 @@
 			</div>
 		</div>
 
-		
+		<audio src="../sounds/sounds-949-you-wouldnt-believe.mp3"></audio>
 		<!-- jQuery -->
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		<!-- socket.io -->
 		<script src="/socket.io/socket.io.js"></script>
-		<script>
-			var server = io.connect("http://localhost:8080");
-			server.on('connect', function(data){
-				nickname = prompt("What is your nickname?");
-				server.emit('join', nickname); // notify the server of the users nickname
-			});
-			
-			// new chatter enters room
-			server.on('enter', function(data){
-				$('#messages').append($('<li style="background:#33cc33; color:white">').text(data));
-			});
-			
-			// connected chatters section
-			server.on('add chatter', function(name){
-				var chatter = $('<li style="color:#b3b3b3;">' + name + '</li>').data('name', name);
-				$('#users').append(chatter);
-			});
-
-			// chatters sends message
-			server.on('message', function(message){
-				$('#messages').append($('<li>').text(message));
-			});
-			
-			// differentiate how the client sees their message
-			server.on('me', function(message){
-				$('#messages').append($('<li style="background:#0066ff; color:white">').text(message));
-			});
-
-			$('#chat_form').submit(function(e){
-				var message = $("#chat_input").val();
-				server.emit('message', message);
-				$('#chat_input').val(''); // Make input box blank for new message
-				return false; // prevents refresh of page after submit
-			});
-		</script>
+		<!-- main.js (place in seperate directory for heroku release) --> 
+		<script src="../main.js"></script>
 	</div>
 </body>
 </html>
