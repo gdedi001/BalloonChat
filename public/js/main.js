@@ -1,5 +1,5 @@
-var server = io.connect("http://localhost:8080");
-var curRoom = $('.nav .active').attr('id');
+var server = io.connect("http://localhost:8080"); // connect to our server
+var curRoom = $('.nav .active').attr('id'); // cache current room
 
 server.on('connect', function(data){
 		nickname = prompt("What is your nickname?");
@@ -11,13 +11,13 @@ server.on('enter', function(data){
 		$('#messages').append($('<li style="background:#33cc33; color:white">').text(data));
 });
 
-// connected chatters section
+// connected users section
 server.on('add chatter', function(name){
-		var chatter = $('<li style="color:#b3b3b3; font-size:22px">' + name + '</li>').data('name', name);
+		var chatter = $('<li style="color:white; font-size:22px">' + name + '</li>').data('name', name);
 		$('#users').append(chatter);
 });
 
-// chatters sends message (not client)
+// user sends message (not client)
 server.on('message', function(message){
 		$('#messages').append($('<li style="display:table; box-shadow: 6px 3px 8px grey;">').text(message));
 		//play();
@@ -36,10 +36,22 @@ $('#chat_form').submit(function(e){
 		return false; // prevents refresh of page after submit
 });
 
-// change room tabs
-$('.nav li').on('click', function(){
+function changeTab(){
 		$('.nav').find('.active').removeClass();
 		$(this).addClass('active');
 		curRoom = $(this).attr('id');
+};
+
+// change room tabs
+$('.nav li').on('click', function(){
+		changeTab();
+		server.emit('switch', curRoom);
+		$('#messages').empty();
 		console.log(curRoom);
+	
+		if(curRoom === 'other'){
+			alert('Comming soon');
+			curRoom = 'general';
+			server.emit('switch', curRoom);
+		}
 });
