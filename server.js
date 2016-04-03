@@ -1,12 +1,12 @@
 "use strict";
-var chat_session = require('./chat-session');
-var serveStatic = require('serve-static');
-// Express with server functionality
-var	express = require('express');
-var app = express();
-var server = require('http').Server(app);
-// Sockets with real-time data
-var io = require('socket.io').listen(server);
+var chat_session = require('./chat-session'),
+		serveStatic = require('serve-static'),
+		// Express with server functionality
+		express = require('express'),
+		app = express(),
+		server = require('http').Server(app),
+		// Sockets with real-time data
+		io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/public')); // used for external files on client
 
@@ -18,29 +18,29 @@ app.get('/', function(req, res){
 
 // Once a browser connects to localhost:8080, the 'connection' event will fire
 io.on('connection', function(client){
-	var storage = chat_session.default.users.channels;
+	let storage = chat_session.default; // cache object for storage
 	
 	// Join the chatroom
 	client.on('join', (name) => {
 		// Alert when new client joins
 		client.nickname = name;
 		// client.defRoom = room
-		client.broadcast.emit("enter", "* " + client.nickname + "* has entered");
+		client.broadcast.emit("enter", "* " + client.nickname + "* has entered the room");
 		
 		// Update current chatters section for new client that joined
-		chat_session.default.users.forEach((user) => {
+		storage.users.forEach((user) => {
 			client.emit('add chatter', user);
 		});
 		// Update current chatters section for other clients
 		client.broadcast.emit('add chatter', client.nickname);
 		
 		// Update NEW client with most recent messages in the room
-		chat_session.default.channels.general.messages.forEach((message) => {
+		storage.channels.general.messages.forEach((message) => {
 			client.emit("message", message.name + ": " + message.data);
 		});
 		
 		// add new chatters to array in chat-session module
-		chat_session.default.users.push(client.nickname);
+		storage.users.push(client.nickname);
 	});
 	
 	client.on('message', (message, room) => {
@@ -53,7 +53,9 @@ io.on('connection', function(client){
 	
 	// When client switches between tabs (rooms)
 	client.on('switch', (room) => {
-		
+		storage.channels[room].messages.forEach((message) => {
+			client.emit("message", message.name + ": " + message.data);
+		});
 	});
 	
 });
