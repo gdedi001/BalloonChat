@@ -18,14 +18,14 @@ app.get('/', function(req, res){
 
 // Once a browser connects to localhost:8080, the 'connection' event will fire
 io.on('connection', function(client){
-	 
 	var storage = chat_session.default.users.channels;
 	
 	// Join the chatroom
 	client.on('join', (name) => {
 		// Alert when new client joins
 		client.nickname = name;
-		client.broadcast.emit("enter", "* " + client.nickname + " has entered the room *");
+		// client.defRoom = room
+		client.broadcast.emit("enter", "* " + client.nickname + "* has entered");
 		
 		// Update current chatters section for new client that joined
 		chat_session.default.users.forEach((user) => {
@@ -41,27 +41,27 @@ io.on('connection', function(client){
 		
 		// add new chatters to array in chat-session module
 		chat_session.default.users.push(client.nickname);
-		
-		//console.log(client.nickname + " has joined!!");
 	});
 	
-	client.on('message', (message) => {
+	client.on('message', (message, room) => {
 		var nickname = client.nickname;
-		var room = 'general';
-		console.log('Current room ' + room);
 		client.broadcast.emit("message", nickname + ": " + message); // send the message to all the other clients except the newly created connection
 		client.emit("me", message); // send message to self
-		storeMessage(room, nickname, message); // store the message in chat-session
-		//notification();
-		console.log(nickname + ' said: ' + message); // used for terminal debugging
+		storeMessage(nickname, message, room); // store the message in chat-session
+		console.log(nickname + ' said: ' + message + " in room " + room); // used for terminal debugging
 	});
 	
-	// client.on('tabChange', ())
+	// When client switches between tabs (rooms)
+	client.on('switch', (room) => {
+		
+	});
+	
 });
 
-function storeMessage(room, name, data){
+function storeMessage(name, data, room){
+	const messageMax = 12;
 	chat_session.default.channels[room].messages.push({name: name, data: data}); // add message to end of array
-	if (chat_session.default.channels[room].messages.length > 10) {
+	if (chat_session.default.channels[room].messages.length > messageMax) {
 		chat_session.default.channels[room].messages.shift(); // if more than 10 messages long, remove the first one
 	}
 }
