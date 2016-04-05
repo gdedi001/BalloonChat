@@ -9,26 +9,29 @@ body {
 }
 
 form { 
-	background: #000; 
+	background: white; 
 	padding: 3px; 
 	position: fixed; 
 	bottom: 0; 
-	width: 80%; 
+	width: 83%; 
 }
 
 form input { 
-	border: 0; 
+	border-color: black;
+	border-radius: 5px;
 	padding: 10px; 
 	font-size: 20px;
-	width: 80%; 
-	margin-right: .5%; 
+	width: 87%; 
+	margin-left: 1px; 
 }
 
 form button { 
-	width: 9%; 
-	background: rgb(130, 224, 255); 
-	border: none; 
-	padding: 10px; 
+	width: 12%; 
+	background: #00A7D7; 
+	border-radius: 8px;
+	color: white;
+	font-size: 20px;
+	padding: 12px; 
 }
 
 #messages {
@@ -53,11 +56,11 @@ form button {
 	position: fixed;
 }
 
-#channel-sec h4 { 
+#users-heading { 
 	color: white;
+	font-family: 'Quicksand', sans-serif;
+	font-size: 30px;
 	text-align: center;
-	font-family: inherit;
-	font-size: 22px;
 
 }
 #users { 
@@ -68,7 +71,11 @@ form button {
 #users li:before { 
 	content: "•"; /* Insert content that looks like bullets */
 	padding-right: 8px;
-	color: green; /* Or a color you prefer */
+	color: chartreuse; /* Or a color you prefer */
+}
+
+#users li {
+	font-family: 'Raleway', sans-serif;
 }
 
 #main {
@@ -81,4 +88,12 @@ form button {
 
 .nav li {
 	font-size: 18px;
+}
+
+#private {
+	border-radius: 10px;
+	font-size: 22px;
+	position: absolute;
+	right: 0;
+	bottom: 0;
 }
