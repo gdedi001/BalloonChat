@@ -4,6 +4,7 @@
 	<title>Mercurius - Communication Powered by the gods</title>
 	<!-- Bootstrap CDN -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Raleway|Quicksand' rel='stylesheet' type='text/css'>
 	<!-- Local CSS -->
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -11,10 +12,11 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-2" id="channel-sec">
-				<h3 style="color:white; text-align:center; text-decoration:underline; font-family:fantasy">Users</h3>
-				<ul id="users">
-				<!-- add users here -->
-				</ul>
+				<h1 id="users-heading">Users</h1>
+					<ul id="users">
+					<!-- add users here -->
+					</ul>
+				<button id="private" type="button" class="btn btn-success btn-block"><i class="glyphicon glyphicon-send"></i></button>
 			</div>
 			<div class="col-md-10" id="main">
 				<ul class="nav nav-tabs">
@@ -29,11 +31,11 @@
 				</form>
 			</div>
 		</div>
-
-		<audio src="sounds/sounds-949-you-wouldnt-believe.mp3"></audio>
+		<!-- Audio -->
+		<audio id="audio" src="sounds/sounds-949-you-wouldnt-believe.mp3"></audio>
 		<!-- jQuery -->
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-		<!-- socket.io -->
+		<!-- socket.io (client API)-->
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="js/main.js"></script>
 		<script src="js/app.js"></script>
