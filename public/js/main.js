@@ -3,6 +3,7 @@ var curRoom = $('.nav .active').attr('id'); // cache current room
 
 server.on('connect', function(data){
 		nickname = prompt("What is your nickname?");
+		//while(nickname) TODO:make sure client cannot choose null
 		server.emit('join', nickname); // notify the server of the users nickname
 });
 
@@ -17,10 +18,14 @@ server.on('add chatter', function(name){
 		$('#users').append(chatter);
 });
 
-// user sends message (not client)
-server.on('message', function(message){
-		$('#messages').append($('<li style="display:table; box-shadow: 6px 3px 8px grey;">').text(message));
-		//play();
+// users' send message
+server.on('message', function(message, room){
+		// only emit message to other users if they are in same channel
+		if (curRoom === room) {
+			$('#messages').append($('<li style="display:table; box-shadow: 6px 3px 8px grey;">').text(message));
+			play(); // invoke function to play sound to other clients
+			console.log('sound played here');
+		}
 });
 
 // differentiate how the client sees their message
@@ -34,24 +39,4 @@ $('#chat_form').submit(function(e){
 		server.emit('message', message, curRoom);
 		$('#chat_input').val(''); // Make input box blank for new message
 		return false; // prevents refresh of page after submit
-});
-
-function changeTab(){
-		$('.nav').find('.active').removeClass();
-		$(this).addClass('active');
-		curRoom = $(this).attr('id');
-};
-
-// change room tabs
-$('.nav li').on('click', function(){
-		changeTab();
-		server.emit('switch', curRoom);
-		$('#messages').empty();
-		console.log(curRoom);
-	
-		if(curRoom === 'other'){
-			alert('Comming soon');
-			curRoom = 'general';
-			server.emit('switch', curRoom);
-		}
 });
