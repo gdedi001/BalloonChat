@@ -7,6 +7,10 @@ server.on('connect', function(data){
 		server.emit('join', nickname); // notify the server of the users nickname
 });
 
+//server.on('disconnect', function(data){
+//	server.emit('disconnect');
+//});
+
 // new chatter enters room
 server.on('enter', function(data){
 		$('#messages').append($('<li style="background:#33cc33; color:white">').text(data));
@@ -40,3 +44,4 @@ $('#chat_form').submit(function(e){
 		$('#chat_input').val(''); // Make input box blank for new message
 		return false; // prevents refresh of page after submit
 });
+
