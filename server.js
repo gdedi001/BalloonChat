@@ -1,15 +1,28 @@
 "use strict";
-var chat_session = require('./chat-session'),
+var session = require('./chat-session'),
 		serveStatic = require('serve-static'),
 		// Express with server functionality
 		express = require('express'),
 		app = express(),
 		server = require('http').Server(app),
 		// Sockets with real-time data
-		io = require('socket.io').listen(server);
+		io = require('socket.io').listen(server),
+		mongoose = require('mongoose');
 
 app.use(express.static(__dirname + '/public')); // used for external files on client
 let storage = chat_session.default; // cache object for storage
+
+// TODO: Figure out mongodb
+//mongoose.connect('mongodb://localhost/chat', function(err){
+//	if (err) {
+//		throw err;
+//	} else {
+//		console.log("Database working...");
+//	}
+//});
+
+// var conn = mongoose.collection;
+//console.log(Storage.users);
 
 // Routing refers to determining how an application responds to a client request to a particular endpoint
 app.get('/', function(req, res){
@@ -19,19 +32,18 @@ app.get('/', function(req, res){
 // Once a browser connects to localhost:8080, the 'connection' event will fire
 io.on('connection', function(client){
 	
-	// Join the chatroom
 	client.on('join', (name) => {
-		// Alert when new client joins
 		client.nickname = name;
 		// check to see if nickname has been taken, if so, give random name
-		if(storage.users.indexOf(client.nickname) !== -1) {client.nickname = randomName();}
+		if(session.User.findOne(client.nickname) !== -1) {client.nickname = randomName();}
 		// tell all chatters that a new user has entered the room
 		client.broadcast.emit("enter", "* " + client.nickname + " * has connected");
 		
-		// Update current chatters section for new client that joined
+		// Update Database current chatters section for new client that joined
 		storage.users.forEach((user) => {
 			client.emit('add chatter', user);
 		});
+		
 		// Update current chatters section for other clients
 		client.broadcast.emit('add chatter', client.nickname);
 		
@@ -42,6 +54,10 @@ io.on('connection', function(client){
 		
 		// add new chatters to users array in chat-session module
 		storage.users.push(client.nickname);
+		
+		// TODO: Figure out mongodb
+//		session.User.insert(client.nickname);
+//		console.log(session.User.find());
 	});
 	
 	client.on('message', (message, room) => {
@@ -62,6 +78,10 @@ io.on('connection', function(client){
 			}
 		});
 	});
+	
+//	client.on('disconnect', () => {
+//		client.emit('disconnect', "client")
+//	});
 	
 });
 
