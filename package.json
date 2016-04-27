@@ -1,8 +1,8 @@
 {
   "name": "MercuriusChat",
   "version": "1.0.0",
-  "description": "a practice environment for node/express/socket.io",
-  "main": "index.js",
+  "description": "chat application COP 4813",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.4",
+    "mongodb": "^2.1.18",
+    "mongoose": "^4.4.13",
     "redis": "^2.5.3",
     "serve-static": "^1.10.2",
     "socket.io": "^1.4.5"
